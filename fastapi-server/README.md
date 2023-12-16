@@ -1,5 +1,5 @@
-Test: docker run -it -v /root/ModSercurityPaser/fastapi-server/app:/app -v /root/ModSercurityPaser/db:/db -p 5555:80 tiangolo/uvicorn-gunicorn-fastapi:python3.11 bash
+Test: docker run -it -v /root/ModSercurityPaser/fastapi-server/app:/app -v /root/ModSercurityPaser/db:/db -p 5555:80 trung501/modsecurity-parser:fastap1.0 bash
 
 example db in /root/ModSercurityPaser/db/modsec.db
 
-docker run -it --rm -v /root/ModSercurityPaser/db:/db -p 5555:80 trung501/modsecurity-parser:fastap1.0
+docker run -it --rm -v /root/ModSercurityPaser/db:/db -p 5555:80 trung501/modsecurity-parser:fastap1.1

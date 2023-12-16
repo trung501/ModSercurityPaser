@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import time
 import sqlite3
-
+import os
 DATABASE='/db/modsec.db'
 #  Connect to the database
 conn = sqlite3.connect(DATABASE)
@@ -985,8 +985,17 @@ def write_to_file_from_file(path_src,path_dst,index_start):
 
 if __name__ == "__main__":
     print('----- modsecurity_parser.py -----')
+    # os get envrionment variables
     input_filename = '/log/audit.log'
-    input_filename = input("Nhap duong dan file log:")
+    log_path= os.getenv('LOG_PATH')
+    if log_path is None:
+        print('LOG_PATH not found in environment variables')
+        print(f"Use default value audit.log")
+    else:
+        input_filename="/log/"+log_path
+        print(f"Use {log_path} as input file")
+    print(f"Use {input_filename} as input file")
+    
     input_filename_temp=input_filename.strip(".log")+"_temp.log"
 
     while True:

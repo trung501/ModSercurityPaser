@@ -69,7 +69,9 @@ def getlog(number: int = 10,page: int = 1,filters: str = None):
     else:
         log = db.query(ModsecLog).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
     try:
-        yield log
+        if log:
+            for i in log:
+                yield i
     finally:
         db.close()
         

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  log:
+    image: trung501/modsecurity-parser:log1.4
+    container_name: log
+    environment:
+      - LOG_PATH=audit.log
+    volumes: 
+      - ./db:/db
+      - /root/log:/log
+  fe:
+    image: flashspys/nginx-static
+    container_name: fe
+    ports:
+      - 5500:80
+    volumes: 
+      - ./web:/static
+  be:
+    image: trung501/modsecurity-parser:fastap1.1
+    container_name: be
+    ports:
+      - 5555:80
+    volumes: 
+      - ./db:/db
+    depends_on:
+      - log
+
+    
