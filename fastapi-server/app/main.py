@@ -61,13 +61,23 @@ def read_root():
         db.close()
 
 @app.get("/getlog")
-def getlog(number: int = 10,page: int = 1,filters: str = None):
-    # oreder by id desc , filter with all colume with no case sensitive
+def getlog(number: int = 10,page: int = 1,distinct:int=0 ,filters: str = None):
+    # oreder by id desc , filter with message colume with no case sensitive, distinct by msg
     db = SessionLocal()
-    if filters:
-        log = db.query(ModsecLog).filter(ModsecLog.message.ilike(f"%{filters}%")).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
-    else:
-        log = db.query(ModsecLog).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
+    try:
+        if distinct == 1:
+            if filters:
+                log = db.query(ModsecLog).filter(ModsecLog.message.ilike(f"%{filters}%")).order_by(ModsecLog.id.desc()).distinct(ModsecLog.msg).limit(number).offset((page-1)*number).all()
+            else:
+                log = db.query(ModsecLog).order_by(ModsecLog.id.desc()).distinct(ModsecLog.msg).limit(number).offset((page-1)*number).all()
+        else:
+            if filters:
+                log = db.query(ModsecLog).filter(ModsecLog.message.ilike(f"%{filters}%")).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
+            else:
+                log = db.query(ModsecLog).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
+    finally:
+        db.close()
+    
     try:
         if log:
             for i in log:

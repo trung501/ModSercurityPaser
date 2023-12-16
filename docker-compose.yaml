@@ -7,7 +7,7 @@ services:
       - LOG_PATH=audit.log
     volumes: 
       - ./db:/db
-      - /var/log/apache2/modsec:/log
+      - /root/log:/log
   fe:
     image: flashspys/nginx-static
     container_name: fe
@@ -16,7 +16,7 @@ services:
     volumes: 
       - ./web:/static
   be:
-    image: trung501/modsecurity-parser:fastap1.1
+    image: trung501/modsecurity-parser:fastap1.2
     container_name: be
     ports:
       - 5555:80
