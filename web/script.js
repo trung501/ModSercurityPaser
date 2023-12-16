@@ -4,6 +4,8 @@ async function fetchData() {
     let number = document.getElementById('number').value;
     let page = document.getElementById('page').value;
     let filters = document.getElementById('filters').value;
+    let distinct = document.getElementById('distinct').checked;
+    console.log("HOST: ", HOST, "number: ", number, "page: ", page, "filters: ", filters, "distinct: ", distinct);
     // strip spaces from params
     HOST = HOST.replace(/\s/g, '');
     number = number.replace(/\s/g, '');
@@ -18,6 +20,9 @@ async function fetchData() {
         }
         if (filters && filters !== '') {
             apiURL += `&filters=${filters}`;
+        }
+        if (distinct === true) {
+            apiURL += `&distinct=1`;
         }
         console.log('Fetching data from:', apiURL);
         const response = await fetch(apiURL);
@@ -38,7 +43,7 @@ function displayData(data) {
     logBody.innerHTML = '';
     // Iterate through each log entry
     data.forEach(logEntry => {
-        console.log("logEntry: ", logEntry);
+        // console.log("logEntry: ", logEntry);
         const logRow = document.createElement('tr');
         const base64Msg = btoa(logEntry.msg);
         const base64Message = btoa(logEntry.message);
@@ -55,7 +60,6 @@ function displayData(data) {
             <td class="message-cell" data-full-message="${base64Message || ''}">${(logEntry.message || '')}...</td>
             <!--<td><button onclick="expandMessage(this)">Expand</button></td> -->
         `;
-        console.log(logRow);
         logBody.appendChild(logRow);
     });
 }

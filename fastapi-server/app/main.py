@@ -64,26 +64,45 @@ def read_root():
 def getlog(number: int = 10,page: int = 1,distinct:int=0 ,filters: str = None):
     # oreder by id desc , filter with message colume with no case sensitive, distinct by msg
     db = SessionLocal()
+    print(f"number: {number}, page: {page}, distinct: {distinct}, filters: {filters}")
+
+    list_result = []
+    list_msg = []
     try:
-        if distinct == 1:
-            if filters:
-                log = db.query(ModsecLog).filter(ModsecLog.message.ilike(f"%{filters}%")).order_by(ModsecLog.id.desc()).distinct(ModsecLog.msg).limit(number).offset((page-1)*number).all()
-            else:
-                log = db.query(ModsecLog).order_by(ModsecLog.id.desc()).distinct(ModsecLog.msg).limit(number).offset((page-1)*number).all()
-        else:
-            if filters:
-                log = db.query(ModsecLog).filter(ModsecLog.message.ilike(f"%{filters}%")).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
-            else:
-                log = db.query(ModsecLog).order_by(ModsecLog.id.desc()).limit(number).offset((page-1)*number).all()
+        query = db.query(ModsecLog)
+
+        if filters:
+            query = query.filter(ModsecLog.message.ilike(f"%{filters}%"))
+
+        # if distinct == 1:
+        #     query = query.distinct(ModsecLog.msg)
+
+        log = query.order_by(ModsecLog.id.desc()).limit(number).offset((page - 1) * number).all()
+
+        for entry in log:
+            if distinct == 1 and entry.msg in list_msg:
+                continue
+            list_result.append({
+                "id": entry.id,
+                "remote_address": entry.remote_address,
+                "remote_port": entry.remote_port,
+                "local_address": entry.local_address,
+                "local_port": entry.local_port,
+                "request": entry.request,
+                "time": entry.time,
+                "msg": entry.msg,
+                "message": entry.message
+            })
+            list_msg.append(entry.msg)
+        del list_msg
+        return list_result
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
     finally:
         db.close()
-    
-    try:
-        if log:
-            for i in log:
-                yield i
-    finally:
-        db.close()
+
+
         
     
 
