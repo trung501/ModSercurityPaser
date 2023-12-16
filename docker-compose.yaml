@@ -16,7 +16,7 @@ services:
     volumes: 
       - ./web:/static
   be:
-    image: trung501/modsecurity-parser:fastap1.2
+    image: trung501/modsecurity-parser:fastapi1.2
     container_name: be
     ports:
       - 5555:80
